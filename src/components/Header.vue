@@ -11,17 +11,22 @@
             </ul>
         </nav>
         <div class="flex space-x-4">
-            <p class="text-white">nome do usuário</p>
-            <router-link to="/login" class="text-white">Login</router-link>
-            <a href="#" class="text-red-500">Sair</a>
+            <p class="text-white">{{ store.user.name ?? "" }}</p>
+            <a v-if="store.isLogged" href="#" class="text-red-500">Sair</a>
         </div>
     </div>
   </header>
 </template>
 
 <script>
+import { store } from "../store";
 
 export default {
   name: "Header",
+  data() {
+    return {
+      store,
+    };
+  },
 }
 </script>
