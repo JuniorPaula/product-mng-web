@@ -1,26 +1,23 @@
 <template>
  <Header />
-  <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold text-center">{{ title }}</h1>
-    <p class="text-center">Welcome to your Vue.js application</p>
-  </div>
+  <MainContent />
   <Footer />
 </template>
 
 <script>
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
+import MainContent from "./components/MainContent.vue";
 
 export default {
   name: "App",
   components: {
     Header,
     Footer,
+    MainContent,
   },
  data() {
-  return {
-   title: "Hello World!",
-  };
+  return {};
  },
 };
 

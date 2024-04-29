@@ -2,7 +2,7 @@
   <header class="bg-gray-800 py-4">
     <div class="container mx-auto flex justify-between items-center px-4">
         <!-- Logo -->
-        <a href="#" class="text-white font-bold text-xl">Logo</a>
+        <a href="#" class="text-white font-bold text-xl">Inventório</a>
         <!-- Navbar -->
         <nav class="hidden md:block">
             <ul class="flex space-x-4">
