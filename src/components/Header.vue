@@ -12,6 +12,7 @@
         </nav>
         <div class="flex space-x-4">
             <p class="text-white">nome do usuário</p>
+            <router-link to="/login" class="text-white">Login</router-link>
             <a href="#" class="text-red-500">Sair</a>
         </div>
     </div>
