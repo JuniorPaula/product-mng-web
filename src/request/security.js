@@ -15,7 +15,7 @@ export let Security = {
     headers.append("Content-Type", "application/json");
     headers.append("Authorization", `Bearer ${store.token}`);
 
-    if (method === "POST") {
+    if (method === "POST" || method === "PUT") {
       return {
         method: method,
         headers: headers,
