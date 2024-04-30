@@ -15,13 +15,15 @@ export let Security = {
     headers.append("Content-Type", "application/json");
     headers.append("Authorization", `Bearer ${store.token}`);
 
-    if (method === "GET") return { method: method, headers: headers };
+    if (method === "POST") {
+      return {
+        method: method,
+        headers: headers,
+        body: JSON.stringify(payload),
+      };
+    }
 
-    return {
-      method: method,
-      headers: headers,
-      body: JSON.stringify(payload),
-    };
+    return { method: method, headers: headers };
   },
 
   checkToken: async  function() {

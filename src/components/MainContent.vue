@@ -117,18 +117,17 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
-        <h3 class="text-xl font-normal text-gray-500 mt-5 mb-6">Are you sure you want to delete this user?</h3>
-        <a href="#" @click="confirmDelete()"
+        <h3 class="text-xl font-normal text-gray-500 mt-5 mb-6">Tem certeza que deseja deletar esse produto?</h3>
+        <a href="#" @click="confirmDelete('modalDelete')"
           class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2">
-          Yes, I'm sure
+          Deletar
         </a>
         <a href="#" @click="openModal('modalDelete')"
           class="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
           data-modal-toggle="delete-product-modal">
-          No, cancel
+          Cancelar
         </a>
       </div>
-
     </div>
   </div>
 </template>
@@ -174,9 +173,23 @@ export default {
         modal.style.display = "block";
       }
     },
-    confirmDelete() {
-      // implement delete product
-      console.log('evt', this.product.id);
+    confirmDelete(modalId) {
+      document.getElementById(modalId).style.display = "none";
+
+      fetch(`${configs.API_URL}/products/${this.product.id}`, Security.requestOptions(null, "DELETE"))
+        .then((response) => response.json())
+        .then(({ error, message, data }) => {
+          if (error) {
+            toast.error(message);
+            return;
+          } else {
+            this.getProducts();
+            toast.success("Produto deletado com sucesso!");
+          }
+        })
+        .catch(() => {
+          toast.error("Ocorreu um erro ao deletar o produto!");
+        });
     },
     addProduct(modalId) {
       const modal = document.getElementById(modalId);
