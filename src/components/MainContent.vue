@@ -136,6 +136,9 @@
 <script>
 import { configs } from '@/configs';
 import { Security } from '@/request/security';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
 
 export default {
   name: "MainContent",
@@ -148,8 +151,11 @@ export default {
   },
   beforeMount() {
     Security.requireToken();
-
-    fetch(`${configs.API_URL}/products`, Security.requestOptions(null))
+    this.getProducts();
+  },
+  methods: {
+    getProducts() {
+      fetch(`${configs.API_URL}/products`, Security.requestOptions(null))
       .then((response) => response.json())
       .then(({ error, message, data }) => {
         if (error) {
@@ -158,8 +164,7 @@ export default {
         }
         this.products = data;
       });
-  },
-  methods: {
+    },
     openModal(modalId, productId) {
       this.product.id = productId;
       const modal = document.getElementById(modalId);
@@ -174,13 +179,26 @@ export default {
       console.log('evt', this.product.id);
     },
     addProduct(modalId) {
-      console.log(this.product)
       const modal = document.getElementById(modalId);
       modal.style.display = "none";
 
-      // focer update component
-      this.$forceUpdate();
-    }
+      const payload = {
+        name: this.product.name,
+        price: parseFloat(this.product.price),
+      };
+
+      fetch(`${configs.API_URL}/products`, Security.requestOptions(payload, "POST"))
+        .then((response) => response.json())
+        .then(({ error, message, data }) => {
+          if (error) {
+            toast.error(message);
+            return;
+          } else {
+            this.getProducts();
+            toast.success("Produto adicionado com sucesso!");
+          }
+        });
+    },
   },
 
 };
