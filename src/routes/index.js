@@ -3,12 +3,18 @@ import { Security } from '../request/security'
 import MainContent from '../components/MainContent.vue'
 import Users from '../components/Users.vue'
 import Login from '../components/Login.vue'
+import Product from '../components/Product.vue'
 
 const routes = [
   {
     path: '/',
     name: 'MainContent',
     component: MainContent
+  },
+  {
+    path: '/product/:id',
+    name: 'Product',
+    component: Product
   },
   {
     path: '/users',
