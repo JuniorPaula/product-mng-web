@@ -1,6 +1,6 @@
 <template>
  <Header v-if="store.isLogged" />
- <div class="container flex-1 h-screen">
+ <div class="h-screen">
     <router-view />
  </div>
   <Footer v-if="store.isLogged" />
