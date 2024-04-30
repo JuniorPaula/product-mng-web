@@ -12,7 +12,7 @@
         </nav>
         <div class="flex space-x-4">
             <p class="text-white">{{ store.user.name ?? "" }}</p>
-            <a v-if="store.isLogged" href="#" class="text-red-500">Sair</a>
+            <a href="javascript:void(0);" @click="logout" class="text-red-500">Sair</a>
         </div>
     </div>
   </header>
@@ -28,5 +28,18 @@ export default {
       store,
     };
   },
+  methods: {
+    logout() {
+      store.token = "";
+      store.user = {};
+      store.isLogged = false;
+
+      // destroy cookie
+      document.cookie = "_site=; path=/; "
+      + "SameSite=Srict; Secure; expires=Thu, 01 Jan 1970 00:00:00 GTM;"
+
+      this.$router.push("/login");
+    }
+  }
 }
 </script>
