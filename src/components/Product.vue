@@ -39,6 +39,9 @@
 <script>
 import { configs } from '@/configs';
 import { Security } from '@/request/security';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
 
 export default {
   name: "Product",
@@ -51,6 +54,7 @@ export default {
     };
   },
   beforeMount() {
+    Security.requireToken();
     this.getProduct();
   },
   methods: {
@@ -59,13 +63,30 @@ export default {
         .then((response) => response.json())
         .then(({ error, message, data }) => {
           if (error) {
-            console.error(message);
+            toast.error(message);
             return;
           }
           this.product.name = data.name;
           this.product.price = data.price;
-        });
+        })
     },
+    update() {
+      const payload = {
+        name: this.product.name,
+        price: parseFloat(this.product.price)
+      };
+      
+      fetch(`${configs.API_URL}/products/${this.$route.params.id}`, Security.requestOptions(payload, "PUT"))
+        .then((response) => response.json())
+        .then(({ error, message }) => {
+          if (error) {
+            toast.error(message);
+            return;
+          }
+          toast.success("Produto atualizado com sucesso!");
+          this.$router.push("/");
+        });
+    }
   }
 }
 </script>
