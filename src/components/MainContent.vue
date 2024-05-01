@@ -40,6 +40,14 @@
         </tr>
       </tbody>
     </table>
+    <!-- pagination -->
+    <div class="container mt-2 ml-1">
+      <button @click="prevPage" :disabled="currentPage === 1" class="bg-gray-900 hover:bg-gray-800 text-white font-bold p-2 mx-2 cursor-pointer">Anterior</button>
+      <template v-for="pageNumber in visiblePages">
+        <button @click="goToPage(pageNumber)" :class="{ 'font-bold bg-green-500 hover:bg-green-800': pageNumber === currentPage }" class="bg-gray-900 hover:bg-gray-800 text-white font-bold mx-1 p-2 cursor-pointer">{{ pageNumber }}</button>
+      </template>
+      <button @click="nextPage" :disabled="currentPage === totalPages" class="bg-gray-900 hover:bg-gray-800 text-white font-bold mx-2 p-2 cursor-pointer">Próximo</button>
+    </div>
   </div>
 
   <div id="modalAddProduct"
@@ -145,6 +153,9 @@ export default {
       title: "Todos os Produtos",
       product: {},
       products: [],
+      currentPage: 1,
+      pageSize: 5,
+      maxVisiblePages: 5,
     };
   },
   beforeMount() {
@@ -153,7 +164,10 @@ export default {
   },
   methods: {
     getProducts() {
-      fetch(`${configs.API_URL}/products`, Security.requestOptions(null))
+      const offset = (this.currentPage - 1) * this.pageSize;
+      const limit = this.pageSize;
+
+      fetch(`${configs.API_URL}/products?page=${offset}&limit=${limit}`, Security.requestOptions(null))
       .then((response) => response.json())
       .then(({ error, message, data }) => {
         if (error) {
@@ -211,7 +225,40 @@ export default {
           }
         });
     },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+        this.getProducts();
+      }
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+        this.getProducts();
+      }
+    },
+    goToPage(pageNumber) {
+      this.currentPage = pageNumber;
+      this.getProducts();
+    },
   },
+  computed: {
+    totalPages() {
+      return Math.ceil(this.products.length / this.pageSize);
+    },
+    visiblePages() {
+      const totalPages = this.totalPages;
+      const currentPage = this.currentPage;
+      const maxVisiblePages = this.maxVisiblePages;
 
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+      return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+    },
+  }
 };
 </script>
