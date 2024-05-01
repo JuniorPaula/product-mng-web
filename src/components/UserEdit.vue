@@ -20,7 +20,7 @@
           <input type="email" v-model="user.email" id="email"
             class="shadow appearance-none border w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
         </div>
-        <div class="flex flex-col mt-4">
+        <div v-if="this.pathId === '0'" class="flex flex-col mt-4">
           <label for="password" class="text-lg font-bold my-2">Senha:</label>
           <input type="password" v-model="user.password" id="password"
             class="shadow appearance-none border w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
@@ -33,7 +33,7 @@
           <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-3">
             {{ this.pathId === '0' ? 'Adicionar' : 'Atualizar' }}
           </button>
-          <button v-if="this.pathId !== '0'" type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4">
+          <button v-if="this.pathId !== '0' && !this.user.is_admin" type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4">
             Deletar
           </button>
         </div>
@@ -64,15 +64,31 @@ export default {
   },
   beforeMount() {
     this.pathId = document.location.href.split('/').pop();
-
-    // this.getUser();
+    if (this.pathId !== "0") {
+      this.getUser();
+    }
   },
   methods: {
     getUser() {
-      //
+      fetch(`${configs.API_URL}/users/${this.pathId}`, Security.requestOptions(null))
+        .then((response) => response.json())
+        .then(({ error, message, data }) => {
+          if (error) {
+            toast.error(message);
+            return;
+          }
+          this.user.name = data.name;
+          this.user.email = data.email;
+          this.user.is_admin = data.is_admin;
+        });
     },
     submitHandler() {
       if (this.pathId === "0" ) {
+        if (!this.user.name || !this.user.email || !this.user.password) {
+          toast.error("Preencha todos os campos!");
+          return;
+        }
+
         const payload = {
           name: this.user.name,
           email: this.user.email,
