@@ -127,6 +127,7 @@ export default {
         const payload = {
           name: this.user.name,
           email: this.user.email,
+          password: this.user.password,
           is_admin: this.user.is_admin
         };
 
