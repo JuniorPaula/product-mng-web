@@ -33,11 +33,46 @@
           <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mr-3">
             {{ this.pathId === '0' ? 'Adicionar' : 'Atualizar' }}
           </button>
-          <button v-if="this.pathId !== '0' && !this.user.is_admin" type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4">
+          <button @click="() => toggleModal()" v-if="this.pathId !== '0' && !this.user.is_admin" type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4">
             Deletar
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- modal -->
+  <div id="modalDelete" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4 ">
+    <div class="relative top-40 mx-auto shadow-xl rounded-md bg-white max-w-md">
+
+      <div class="flex justify-end p-2">
+        <button @click="toggleModal()" type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="p-6 pt-0 text-center">
+        <svg class="w-20 h-20 text-red-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <h3 class="text-xl font-normal text-gray-500 mt-5 mb-6">Tem certeza que deseja deletar esse usuário?</h3>
+        <a href="#" @click="confirmDelete()"
+          class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2">
+          Deletar
+        </a>
+        <a href="#" @click="toggleModal()"
+          class="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
+          data-modal-toggle="delete-user-modal">
+          Cancelar
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -125,7 +160,33 @@ export default {
             this.$router.push("/users");
           });
       }
-    }
+    },
+    toggleModal() {
+      const modal = document.getElementById("modalDelete");
+      if (modal.style.display === "block") {
+        modal.style.display = "none";
+      } else {
+        modal.style.display = "block";
+      }
+    },
+    confirmDelete() {
+      document.getElementById("modalDelete").style.display = "none";
+
+      fetch(`${configs.API_URL}/users/${this.pathId}`, Security.requestOptions(null, "DELETE"))
+        .then((response) => response.json())
+        .then(({ error, message }) => {
+          if (error) {
+            toast.error(message);
+            return;
+          } else {
+            toast.success("Usuário deletado com sucesso!");
+            this.$router.push("/users");
+          }
+        })
+        .catch(() => {
+          toast.error("Ocorreu um erro ao deletar o usuário!");
+        });
+    },
   }
 };
 </script>
