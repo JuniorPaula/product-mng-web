@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { Security } from '../request/security'
 import MainContent from '../components/MainContent.vue'
 import Users from '../components/Users.vue'
+import UserEdit from '../components/UserEdit.vue'
 import Login from '../components/Login.vue'
 import Product from '../components/Product.vue'
 
@@ -20,6 +21,11 @@ const routes = [
     path: '/users',
     name: 'Users',
     component: Users
+  },
+  {
+    path: '/user/:userId',
+    name: 'UserEdit',
+    component: UserEdit
   },
   {
     path: '/login',
