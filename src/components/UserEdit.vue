@@ -107,7 +107,23 @@ export default {
           });
 
       } else {
-        console.log('Atualizar');
+        const payload = {
+          name: this.user.name,
+          email: this.user.email,
+          is_admin: this.user.is_admin
+        };
+
+        fetch(`${configs.API_URL}/users/${this.pathId}`, Security.requestOptions(payload, "PUT"))
+          .then((response) => response.json())
+          .then(({ error, message }) => {
+            if (error) {
+              toast.error(message);
+              return;
+            }
+
+            toast.success("Usuário atualizado com sucesso!");
+            this.$router.push("/users");
+          });
       }
     }
   }
