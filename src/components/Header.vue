@@ -7,7 +7,7 @@
         <nav class="hidden md:block">
             <ul class="flex space-x-4">
                 <li><router-link to="/" class="text-white">Produtos</router-link></li>
-                <li><router-link to="/users" class="text-white">Usuários</router-link></li>
+                <li><router-link v-if="store.user.isAdmin" to="/users" class="text-white">Usuários</router-link></li>
             </ul>
         </nav>
         <div class="flex space-x-4">

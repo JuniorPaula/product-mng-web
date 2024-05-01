@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { Security } from '../request/security'
+import { store } from '../store'
 import MainContent from '../components/MainContent.vue'
 import Users from '../components/Users.vue'
 import UserEdit from '../components/UserEdit.vue'
@@ -20,12 +21,20 @@ const routes = [
   {
     path: '/users',
     name: 'Users',
-    component: Users
+    component: Users,
+    beforeEnter: () => {
+      if(store.user.isAdmin) return true;
+      return { name: 'MainContent' };
+    }
   },
   {
     path: '/user/:userId',
     name: 'UserEdit',
-    component: UserEdit
+    component: UserEdit,
+    beforeEnter: () => {
+      if(store.user.isAdmin) return true;
+      return { name: 'MainContent' };
+    }
   },
   {
     path: '/login',
