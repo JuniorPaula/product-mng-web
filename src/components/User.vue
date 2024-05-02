@@ -83,6 +83,33 @@ export default {
           this.name = data.name;
           this.email = data.email;
         })
+    },
+    submitHandler() {
+      if (!this.name || !this.email) {
+        toast.error("Preencha todos os campos!");
+        return;
+      }
+
+      const payload = {
+        name: this.name,
+        email: this.email,
+        password: this.password,
+      }
+
+      fetch(`${configs.API_URL}/users/${store.user.id}/me`, Security.requestOptions(payload, "PUT"))
+        .then((response) => response.json())
+        .then(({ error, message }) => {
+          if (error) {
+            toast.error(message);
+            return;
+          }
+          toast.success("Usuário alterado com sucesso!");
+          this.password = "";
+
+          // update store
+          store.user.name = this.name;
+          store.user.email = this.email;
+        });
     }
   }
 }
