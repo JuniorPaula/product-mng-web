@@ -3,6 +3,7 @@ import { Security } from '../request/security'
 import { store } from '../store'
 import MainContent from '../components/MainContent.vue'
 import Users from '../components/Users.vue'
+import User from '../components/User.vue'
 import UserEdit from '../components/UserEdit.vue'
 import Login from '../components/Login.vue'
 import Product from '../components/Product.vue'
@@ -35,6 +36,11 @@ const routes = [
       if(store.user.isAdmin) return true;
       return { name: 'MainContent' };
     }
+  },
+  {
+    path: '/user',
+    name: 'User',
+    component: User,
   },
   {
     path: '/login',

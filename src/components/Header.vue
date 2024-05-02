@@ -11,7 +11,7 @@
             </ul>
         </nav>
         <div class="flex space-x-4">
-            <p class="text-white">{{ store.user.name ?? "" }}</p>
+            <router-link to="/user" class="text-white">{{ store.user.name ?? "" }}</router-link>
             <a href="javascript:void(0);" @click="logout" class="text-red-500">Sair</a>
         </div>
     </div>
